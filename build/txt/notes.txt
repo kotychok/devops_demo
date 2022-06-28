@@ -1,0 +1,13 @@
+# create soft link in the site-enabled directory
+sudo ln -s /etc/nginx/sites-available/devops_demo /etc/nginx/sites-enabled
+
+# for Ubuntu
+sudo -i -u postgres
+psql
+createdb devops
+ALTER USER postgres PASSWORD 'postgres';
+
+
+# gunicorn start
+
+gunicorn --workers 3 --bind 0.0.0.0:8000 main.wsgi:application

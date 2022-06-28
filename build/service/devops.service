@@ -1,0 +1,19 @@
+[Unit]
+Description=devops app daemon
+After=network.target
+
+[Service]
+User=ubuntu
+Environment="POSTGRES_NAME=devops"
+Environment="POSTGRES_USER=postgres"
+Environment="POSTGRES_PASSWORD=postgres"
+
+WorkingDirectory=/home/ubuntu/devops_demo
+ExecStart=/home/ubuntu/.local/share/virtualenvs/devops_demo-42CnbDhB/bin/gunicorn \
+--workers 3 \
+--bind 0.0.0.0:8000 \
+ main.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+

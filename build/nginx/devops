@@ -1,0 +1,15 @@
+server {
+    listen 80;
+    server_name 44.202.113.211;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root /home/ubuntu/devops_demo/static/;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/ubuntu/devops_demo/devops.sock;
+    }
+
+}

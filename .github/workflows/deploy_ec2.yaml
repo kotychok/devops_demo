@@ -7,6 +7,10 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
       - name: Configure SSH
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/staging.key
@@ -18,17 +22,10 @@ jobs:
             IdentityFile ~/.ssh/staging.key
             StrictHostKeyChecking no
           END
-        env:
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_KEY: ${{ secrets.SSH_KEY }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-
       - name: Stop the server
         run: ssh staging 'sudo systemctl stop devops.service'
-
       - name: Check out the source
         run: ssh staging 'cd devops_demo && git fetch && git reset --hard origin/master'
-
       - name: Start the server
         if: ${{ always() }}
         run: ssh staging 'sudo systemctl start devops.service'
